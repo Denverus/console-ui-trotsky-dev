@@ -6,23 +6,28 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 
-export function Login() {
-  const { login } = useAuth()
+export function Register() {
+  const { register } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    if (password !== confirm) {
+      setError('Passwords do not match')
+      return
+    }
     setError('')
     setLoading(true)
     try {
-      await login(email, password)
+      await register(email, password)
       navigate('/')
-    } catch {
-      setError('Invalid email or password')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {
       setLoading(false)
     }
@@ -32,8 +37,8 @@ export function Login() {
     <div className="flex items-center justify-center h-screen bg-muted/40">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>console.trotsky.dev</CardTitle>
-          <CardDescription>Sign in to your account</CardDescription>
+          <CardTitle>Create account</CardTitle>
+          <CardDescription>console.trotsky.dev</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -58,16 +63,26 @@ export function Login() {
                 required
               />
             </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="confirm">Confirm password</Label>
+              <Input
+                id="confirm"
+                type="password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                required
+              />
+            </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in…' : 'Sign in'}
+              {loading ? 'Creating account…' : 'Create account'}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="justify-center text-sm text-muted-foreground">
-          Don't have an account?&nbsp;
-          <Link to="/register" className="underline underline-offset-4 hover:text-primary">
-            Create one
+          Already have an account?&nbsp;
+          <Link to="/login" className="underline underline-offset-4 hover:text-primary">
+            Sign in
           </Link>
         </CardFooter>
       </Card>
