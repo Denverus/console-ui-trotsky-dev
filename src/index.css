@@ -10,18 +10,34 @@
     --card-foreground: 222.2 84% 4.9%;
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
+    --primary-hover: 222 47% 20%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-subtle: 210 40% 98%;
+    --muted-hover: 210 40% 92%;
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
+    --border-strong: 214 32% 80%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
+    --success: 142 72% 38%;
+    --success-bg: 142 72% 96%;
+    --success-border: 142 50% 85%;
+    --warn: 32 95% 44%;
+    --warn-bg: 32 100% 96%;
+    --warn-border: 32 80% 85%;
+    --danger: 0 72% 51%;
+    --danger-bg: 0 85% 97%;
+    --danger-border: 0 70% 88%;
+    --info: 217 91% 52%;
+    --info-bg: 217 100% 97%;
+    --info-border: 217 80% 88%;
   }
 
   * {
@@ -31,6 +47,6 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: system-ui, -apple-system, "Inter", "Segoe UI", sans-serif;
   }
 }

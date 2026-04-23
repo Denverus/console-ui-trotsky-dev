@@ -14,7 +14,7 @@ export function SessionsChart({ data }: Props) {
         <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(v) => v.slice(5)} />
         <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
         <Tooltip />
-        <Line type="monotone" dataKey="sessions" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+        <Line type="monotone" dataKey="sessions" stroke="#6366f1" strokeWidth={2} dot={false} />
       </LineChart>
     </ResponsiveContainer>
   )

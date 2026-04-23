@@ -14,7 +14,7 @@ export function TopEventsChart({ data }: Props) {
         <XAxis type="number" tick={{ fontSize: 11 }} allowDecimals={false} />
         <YAxis dataKey="eventName" type="category" tick={{ fontSize: 11 }} width={76} />
         <Tooltip />
-        <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+        <Bar dataKey="count" fill="#6366f1" radius={[0, 4, 4, 0]} />
       </BarChart>
     </ResponsiveContainer>
   )
