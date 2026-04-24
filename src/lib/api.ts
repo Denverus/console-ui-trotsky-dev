@@ -49,6 +49,8 @@ export const platformApi = {
   get: (path: string) => request(PLATFORM, path),
   post: (path: string, body?: unknown) =>
     request(PLATFORM, path, { method: 'POST', body: JSON.stringify(body) }),
+  patch: (path: string, body?: unknown) =>
+    request(PLATFORM, path, { method: 'PATCH', body: JSON.stringify(body) }),
   delete: (path: string) => request(PLATFORM, path, { method: 'DELETE' }),
 }
 

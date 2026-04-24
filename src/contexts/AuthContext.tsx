@@ -8,7 +8,7 @@ interface AuthContextValue {
   user: User | null
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string) => Promise<void>
+  register: (email: string, password: string, firstName?: string, lastName?: string) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -40,8 +40,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(data.user)
   }
 
-  async function register(email: string, password: string) {
-    const res = await platformApi.post('/api/auth/register', { email, password })
+  async function register(email: string, password: string, firstName?: string, lastName?: string) {
+    const res = await platformApi.post('/api/auth/register', { email, password, firstName, lastName })
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))
       throw new Error(data.message ?? 'Registration failed')
