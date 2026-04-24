@@ -13,9 +13,9 @@ async function request(
   retry = true,
 ): Promise<Response> {
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
   }
+  if (options.body !== undefined) headers['Content-Type'] = 'application/json'
   if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`
 
   const res = await fetch(`${base}${path}`, { ...options, headers, credentials: 'include' })
