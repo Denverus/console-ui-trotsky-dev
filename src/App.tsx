@@ -11,6 +11,8 @@ import { Companies } from '@/pages/Companies'
 import { CompanyDetail } from '@/pages/CompanyDetail'
 import { Users } from '@/pages/Users'
 import { UserDetail } from '@/pages/UserDetail'
+import { Configuration } from '@/pages/Configuration'
+import { SuperAdminRoute } from '@/components/SuperAdminRoute'
 
 export function App() {
   return (
@@ -34,6 +36,14 @@ export function App() {
             <Route path="companies/:id" element={<CompanyDetail />} />
             <Route path="users" element={<Users />} />
             <Route path="users/:id" element={<UserDetail />} />
+            <Route
+              path="configuration"
+              element={
+                <SuperAdminRoute>
+                  <Configuration />
+                </SuperAdminRoute>
+              }
+            />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

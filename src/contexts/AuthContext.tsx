@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const res = await platformApi.post('/api/auth/register', { email, password, firstName, lastName })
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))
-      throw new Error(data.message ?? 'Registration failed')
+      throw new Error(data.error ?? data.message ?? 'Registration failed')
     }
     const data = await res.json()
     setToken(data.accessToken)

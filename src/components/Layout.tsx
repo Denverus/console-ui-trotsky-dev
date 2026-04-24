@@ -98,6 +98,7 @@ const PATH_LABELS: Record<string, string> = {
   '/app/companies': 'Companies',
   '/app/users': 'Users',
   '/app/analytics': 'Analytics',
+  '/app/configuration': 'Configuration',
 }
 
 const SERVICES = [
@@ -282,7 +283,9 @@ export function Layout() {
           <div className="p-3 border-t border-border flex flex-col gap-0.5">
             <SideNavItem to="/app/api-keys" icon={<Key className="h-[15px] w-[15px]" />} label="API keys" disabled />
             <SideNavItem to="/app/docs" icon={<BookOpen className="h-[15px] w-[15px]" />} label="Docs" external />
-            <SideNavItem to="/app/settings" icon={<Settings className="h-[15px] w-[15px]" />} label="Settings" disabled />
+            {user?.role === 'superadmin' && (
+              <SideNavItem to="/app/configuration" icon={<Settings className="h-[15px] w-[15px]" />} label="Configuration" />
+            )}
             <button
               onClick={logout}
               className="flex items-center gap-2.5 w-full px-2 py-[6px] rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors text-left"
