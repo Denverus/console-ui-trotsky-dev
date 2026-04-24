@@ -27,7 +27,7 @@ export function Register() {
     setLoading(true)
     try {
       await register(email, password, firstName || undefined, lastName || undefined)
-      navigate('/')
+      navigate('/app')
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {

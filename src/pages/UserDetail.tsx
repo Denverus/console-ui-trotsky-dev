@@ -114,7 +114,7 @@ export function UserDetail() {
   return (
     <div className="p-6 space-y-6 max-w-2xl">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Link to="/users" className="hover:text-foreground">Users</Link>
+        <Link to="/app/users" className="hover:text-foreground">Users</Link>
         <span>/</span>
         <span className="text-foreground">{displayName}</span>
       </div>

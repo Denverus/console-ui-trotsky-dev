@@ -134,7 +134,7 @@ export function Companies() {
                 <TableCell><Badge variant={tierColor(c.planTier) as 'default' | 'secondary' | 'outline'}>{c.planTier}</Badge></TableCell>
                 <TableCell className="text-muted-foreground">{new Date(c.createdAt).toLocaleDateString()}</TableCell>
                 <TableCell>
-                  <Link to={`/companies/${c._id}`} className="text-sm text-primary hover:underline">
+                  <Link to={`/app/companies/${c._id}`} className="text-sm text-primary hover:underline">
                     Manage →
                   </Link>
                 </TableCell>

@@ -20,7 +20,7 @@ export function Login() {
     setLoading(true)
     try {
       await login(email, password)
-      navigate('/')
+      navigate('/app')
     } catch {
       setError('Invalid email or password')
     } finally {

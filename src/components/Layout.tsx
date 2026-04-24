@@ -94,14 +94,14 @@ function CompanyDropdown({
 }
 
 const PATH_LABELS: Record<string, string> = {
-  '/': 'Overview',
-  '/companies': 'Companies',
-  '/users': 'Users',
-  '/analytics': 'Analytics',
+  '/app': 'Overview',
+  '/app/companies': 'Companies',
+  '/app/users': 'Users',
+  '/app/analytics': 'Analytics',
 }
 
 const SERVICES = [
-  { id: 'analytics', name: 'Analytics', path: '/analytics', color: '#6366f1' },
+  { id: 'analytics', name: 'Analytics', path: '/app/analytics', color: '#6366f1' },
 ]
 
 export function Layout() {
@@ -252,10 +252,10 @@ export function Layout() {
         <aside className="flex-none flex flex-col border-r border-border bg-card" style={{ width: 220 }}>
           {/* Primary nav */}
           <div className="p-3 pb-1.5 flex flex-col gap-0.5">
-            <SideNavItem to="/" icon={<LayoutDashboard className="h-[15px] w-[15px]" />} label="Overview" end />
-            <SideNavItem to="/companies" icon={<Building2 className="h-[15px] w-[15px]" />} label="Companies" />
-            <SideNavItem to="/users" icon={<Users className="h-[15px] w-[15px]" />} label="Users" />
-            <SideNavItem to="/activity" icon={<Activity className="h-[15px] w-[15px]" />} label="Activity" disabled />
+            <SideNavItem to="/app" icon={<LayoutDashboard className="h-[15px] w-[15px]" />} label="Overview" end />
+            <SideNavItem to="/app/companies" icon={<Building2 className="h-[15px] w-[15px]" />} label="Companies" />
+            <SideNavItem to="/app/users" icon={<Users className="h-[15px] w-[15px]" />} label="Users" />
+            <SideNavItem to="/app/activity" icon={<Activity className="h-[15px] w-[15px]" />} label="Activity" disabled />
           </div>
 
           {/* Services */}
@@ -280,9 +280,9 @@ export function Layout() {
 
           {/* Footer */}
           <div className="p-3 border-t border-border flex flex-col gap-0.5">
-            <SideNavItem to="/api-keys" icon={<Key className="h-[15px] w-[15px]" />} label="API keys" disabled />
-            <SideNavItem to="/docs" icon={<BookOpen className="h-[15px] w-[15px]" />} label="Docs" external />
-            <SideNavItem to="/settings" icon={<Settings className="h-[15px] w-[15px]" />} label="Settings" disabled />
+            <SideNavItem to="/app/api-keys" icon={<Key className="h-[15px] w-[15px]" />} label="API keys" disabled />
+            <SideNavItem to="/app/docs" icon={<BookOpen className="h-[15px] w-[15px]" />} label="Docs" external />
+            <SideNavItem to="/app/settings" icon={<Settings className="h-[15px] w-[15px]" />} label="Settings" disabled />
             <button
               onClick={logout}
               className="flex items-center gap-2.5 w-full px-2 py-[6px] rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors text-left"

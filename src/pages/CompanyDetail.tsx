@@ -91,7 +91,7 @@ export function CompanyDetail() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center gap-2">
-        <Link to="/companies" className="text-muted-foreground hover:text-foreground">
+        <Link to="/app/companies" className="text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-4 w-4" />
         </Link>
         <h1 className="text-xl font-semibold">{company?.name ?? '…'}</h1>

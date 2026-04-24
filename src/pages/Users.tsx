@@ -83,7 +83,7 @@ export function Users() {
                   {new Date(u.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  <Link to={`/users/${u._id}`} className="text-sm text-primary hover:underline">
+                  <Link to={`/app/users/${u._id}`} className="text-sm text-primary hover:underline">
                     View →
                   </Link>
                 </TableCell>
