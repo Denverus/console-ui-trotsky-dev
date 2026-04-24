@@ -8,6 +8,7 @@ import { Dashboard } from '@/pages/Dashboard'
 import { Analytics } from '@/pages/Analytics'
 import { Companies } from '@/pages/Companies'
 import { CompanyDetail } from '@/pages/CompanyDetail'
+import { Users } from '@/pages/Users'
 
 export function App() {
   return (
@@ -28,6 +29,7 @@ export function App() {
             <Route path="analytics" element={<Analytics />} />
             <Route path="companies" element={<Companies />} />
             <Route path="companies/:id" element={<CompanyDetail />} />
+            <Route path="users" element={<Users />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

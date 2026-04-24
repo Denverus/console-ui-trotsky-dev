@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Building2, Activity, BarChart3, Search, Bell,
-  ChevronDown, Settings, Key, LogOut, BookOpen, ArrowUpRight,
+  ChevronDown, Settings, Key, LogOut, BookOpen, ArrowUpRight, Users,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { platformApi } from '@/lib/api'
@@ -96,6 +96,7 @@ function CompanyDropdown({
 const PATH_LABELS: Record<string, string> = {
   '/': 'Overview',
   '/companies': 'Companies',
+  '/users': 'Users',
   '/analytics': 'Analytics',
 }
 
@@ -253,6 +254,7 @@ export function Layout() {
           <div className="p-3 pb-1.5 flex flex-col gap-0.5">
             <SideNavItem to="/" icon={<LayoutDashboard className="h-[15px] w-[15px]" />} label="Overview" end />
             <SideNavItem to="/companies" icon={<Building2 className="h-[15px] w-[15px]" />} label="Companies" />
+            <SideNavItem to="/users" icon={<Users className="h-[15px] w-[15px]" />} label="Users" />
             <SideNavItem to="/activity" icon={<Activity className="h-[15px] w-[15px]" />} label="Activity" disabled />
           </div>
 
