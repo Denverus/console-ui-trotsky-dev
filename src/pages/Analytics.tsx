@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
-import { LayoutDashboard, Zap, Clock, Filter, Settings, Globe, Download } from 'lucide-react'
+import { LayoutDashboard, Zap, Clock, Filter, Settings, Globe, Download, Box } from 'lucide-react'
 import { analyticsApi } from '@/lib/api'
 import { SessionsChart } from '@/components/charts/SessionsChart'
 import { TopEventsChart } from '@/components/charts/TopEventsChart'
+import { EntityInteractionsChart } from '@/components/charts/EntityInteractionsChart'
 import { Sparkline } from '@/components/Sparkline'
 import { cn } from '@/lib/utils'
 import type { LayoutContext } from '@/components/Layout'
@@ -23,6 +24,19 @@ interface DurationStats {
   p50: number
   p90: number
   sampleSize: number
+}
+interface EntityStats {
+  total: number
+  byEntity: {
+    entityId: string
+    entityType: string
+    entityName: string
+    starts: number
+    completions: number
+    completionRate: number
+    avgDurationMs: number
+  }[]
+  byDay: { date: string; count: number }[]
 }
 
 function ms(v: number): string {
@@ -102,6 +116,7 @@ const SUB_NAV = [
   { id: 'overview',  label: 'Overview',  icon: LayoutDashboard },
   { id: 'events',    label: 'Events',    icon: Zap },
   { id: 'sessions',  label: 'Sessions',  icon: Clock },
+  { id: 'entities',  label: 'Entities',  icon: Box },
   { id: 'settings',  label: 'Settings',  icon: Settings },
 ]
 
@@ -112,6 +127,7 @@ export function Analytics() {
   const [sessions, setSessions] = useState<SessionStats | null>(null)
   const [events, setEvents] = useState<EventStats | null>(null)
   const [duration, setDuration] = useState<DurationStats | null>(null)
+  const [entityStats, setEntityStats] = useState<EntityStats | null>(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -122,10 +138,12 @@ export function Analytics() {
       analyticsApi.get(`/api/stats/sessions${q}`).then((r) => r.ok ? r.json() : null),
       analyticsApi.get(`/api/stats/events${q}`).then((r) => r.ok ? r.json() : null),
       analyticsApi.get(`/api/stats/session-duration${q}`).then((r) => r.ok ? r.json() : null),
-    ]).then(([s, e, d]) => {
+      analyticsApi.get(`/api/stats/entities${q}`).then((r) => r.ok ? r.json() : null),
+    ]).then(([s, e, d, ent]) => {
       setSessions(s)
       setEvents(e)
       setDuration(d)
+      setEntityStats(ent)
     }).finally(() => setLoading(false))
   }, [companyId])
 
@@ -359,6 +377,79 @@ export function Analytics() {
                     </div>
                   )}
                 </div>
+              </>
+            )}
+
+            {/* Entities tab */}
+            {tab === 'entities' && (
+              <>
+                <div className="grid grid-cols-3 gap-3">
+                  <StatCard
+                    label="Total interactions"
+                    value={entityStats?.total != null ? entityStats.total.toLocaleString() : '—'}
+                    loading={loading}
+                  />
+                  <StatCard
+                    label="Avg completion rate"
+                    value={
+                      entityStats && entityStats.byEntity.length > 0
+                        ? `${Math.round((entityStats.byEntity.reduce((s, e) => s + e.completionRate, 0) / entityStats.byEntity.length) * 100)}%`
+                        : '—'
+                    }
+                    loading={loading}
+                  />
+                  <StatCard
+                    label="Avg play duration"
+                    value={(() => {
+                      if (!entityStats) return '—'
+                      const nonZero = entityStats.byEntity.filter((e) => e.avgDurationMs > 0)
+                      if (nonZero.length === 0) return '—'
+                      return ms(Math.round(nonZero.reduce((s, e) => s + e.avgDurationMs, 0) / nonZero.length))
+                    })()}
+                    loading={loading}
+                  />
+                </div>
+
+                {entityStats && entityStats.byEntity.length > 0 ? (
+                  <>
+                    <div className="bg-card border border-border rounded-[10px] p-[18px]">
+                      <div className="text-[14px] font-semibold mb-3.5">Interactions by entity</div>
+                      <EntityInteractionsChart data={entityStats.byEntity} />
+                    </div>
+
+                    <div className="bg-card border border-border rounded-[10px] p-[18px]">
+                      <div className="text-[14px] font-semibold mb-3.5">Entity breakdown</div>
+                      <table className="w-full text-[12.5px]">
+                        <thead>
+                          <tr className="text-left text-muted-foreground border-b border-border">
+                            <th className="pb-2 font-medium">Entity</th>
+                            <th className="pb-2 font-medium">Type</th>
+                            <th className="pb-2 font-medium text-right">Starts</th>
+                            <th className="pb-2 font-medium text-right">Completions</th>
+                            <th className="pb-2 font-medium text-right">Rate</th>
+                            <th className="pb-2 font-medium text-right">Avg Duration</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {entityStats.byEntity.map((e) => (
+                            <tr key={e.entityId} className="border-b border-border last:border-0">
+                              <td className="py-2 pr-4 font-medium">{e.entityName || e.entityId}</td>
+                              <td className="py-2 pr-4 text-muted-foreground">{e.entityType}</td>
+                              <td className="py-2 pr-4 text-right tabular-nums">{e.starts.toLocaleString()}</td>
+                              <td className="py-2 pr-4 text-right tabular-nums">{e.completions.toLocaleString()}</td>
+                              <td className="py-2 pr-4 text-right tabular-nums">{Math.round(e.completionRate * 100)}%</td>
+                              <td className="py-2 text-right tabular-nums">{e.avgDurationMs > 0 ? ms(e.avgDurationMs) : '—'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                ) : (
+                  <div className="bg-card border border-border rounded-[10px] p-6 text-sm text-muted-foreground">
+                    {loading ? 'Loading…' : 'No entity interaction data yet. Send entity_started or entity_completed events to see metrics here.'}
+                  </div>
+                )}
               </>
             )}
 
