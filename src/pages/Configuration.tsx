@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 
 export function Configuration() {
   const [registrationEnabled, setRegistrationEnabled] = useState<boolean | null>(null)
+  const [createUsersAsInactive, setCreateUsersAsInactive] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saveMessage, setSaveMessage] = useState<{ text: string; type: 'ok' | 'error' } | null>(null)
@@ -17,6 +18,7 @@ export function Configuration() {
       if (res.ok) {
         const data = await res.json()
         setRegistrationEnabled(data.config.registrationEnabled)
+        setCreateUsersAsInactive(data.config.createUsersAsInactive)
       }
       setLoading(false)
     })
@@ -30,6 +32,23 @@ export function Configuration() {
       if (!res.ok) throw new Error('Failed to save')
       const data = await res.json()
       setRegistrationEnabled(data.config.registrationEnabled)
+      setSaveMessage({ text: 'Saved.', type: 'ok' })
+    } catch {
+      setSaveMessage({ text: 'Failed to save. Try again.', type: 'error' })
+    } finally {
+      setSaving(false)
+      setTimeout(() => setSaveMessage(null), 2000)
+    }
+  }
+
+  async function handleInactiveToggle(value: boolean) {
+    setSaving(true)
+    setSaveMessage(null)
+    try {
+      const res = await platformApi.patch('/api/config', { createUsersAsInactive: value })
+      if (!res.ok) throw new Error('Failed to save')
+      const data = await res.json()
+      setCreateUsersAsInactive(data.config.createUsersAsInactive)
       setSaveMessage({ text: 'Saved.', type: 'ok' })
     } catch {
       setSaveMessage({ text: 'Failed to save. Try again.', type: 'error' })
@@ -67,8 +86,25 @@ export function Configuration() {
                   disabled={loading || saving}
                 />
               </div>
+
+              <div className="border-t border-border my-4" />
+
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Create new users as inactive</Label>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    New registrations will be pending approval. Users cannot log in until activated.
+                  </p>
+                </div>
+                <Switch
+                  checked={createUsersAsInactive ?? false}
+                  onCheckedChange={handleInactiveToggle}
+                  disabled={loading || saving}
+                />
+              </div>
+
               {saveMessage && (
-                <p className={cn('text-sm mt-3', saveMessage.type === 'ok' ? 'text-green-600' : 'text-destructive')}>
+                <p className={cn('text-sm mt-4', saveMessage.type === 'ok' ? 'text-green-600' : 'text-destructive')}>
                   {saveMessage.text}
                 </p>
               )}

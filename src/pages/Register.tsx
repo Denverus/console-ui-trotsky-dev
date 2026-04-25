@@ -16,6 +16,7 @@ export function Register() {
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [pending, setPending] = useState(false)
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -26,13 +27,39 @@ export function Register() {
     setError('')
     setLoading(true)
     try {
-      await register(email, password, firstName || undefined, lastName || undefined)
-      navigate('/app')
+      const result = await register(email, password, firstName || undefined, lastName || undefined)
+      if (result.pending) {
+        setPending(true)
+      } else {
+        navigate('/app')
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {
       setLoading(false)
     }
+  }
+
+  if (pending) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-muted/40">
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle>Registration complete</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Thank you for interest to our product. We will let you know once your account approved.
+            </p>
+          </CardContent>
+          <CardFooter className="justify-center text-sm text-muted-foreground">
+            <Link to="/login" className="underline underline-offset-4 hover:text-primary">
+              Back to sign in
+            </Link>
+          </CardFooter>
+        </Card>
+      </div>
+    )
   }
 
   return (

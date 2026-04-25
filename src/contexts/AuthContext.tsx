@@ -8,7 +8,7 @@ interface AuthContextValue {
   user: User | null
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string, firstName?: string, lastName?: string) => Promise<void>
+  register: (email: string, password: string, firstName?: string, lastName?: string) => Promise<{ pending: boolean }>
   logout: () => Promise<void>
 }
 
@@ -34,21 +34,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function login(email: string, password: string) {
     const res = await platformApi.post('/api/auth/login', { email, password })
-    if (!res.ok) throw new Error('Invalid credentials')
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      throw new Error(data.error ?? 'Invalid credentials')
+    }
     const data = await res.json()
     setToken(data.accessToken)
     setUser(data.user)
   }
 
-  async function register(email: string, password: string, firstName?: string, lastName?: string) {
+  async function register(email: string, password: string, firstName?: string, lastName?: string): Promise<{ pending: boolean }> {
     const res = await platformApi.post('/api/auth/register', { email, password, firstName, lastName })
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))
       throw new Error(data.error ?? data.message ?? 'Registration failed')
     }
     const data = await res.json()
+    if (data.pending) return { pending: true }
     setToken(data.accessToken)
     setUser(data.user)
+    return { pending: false }
   }
 
   async function logout() {

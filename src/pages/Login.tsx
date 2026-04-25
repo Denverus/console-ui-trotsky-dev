@@ -21,8 +21,8 @@ export function Login() {
     try {
       await login(email, password)
       navigate('/app')
-    } catch {
-      setError('Invalid email or password')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Invalid email or password')
     } finally {
       setLoading(false)
     }
