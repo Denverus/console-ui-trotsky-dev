@@ -7,6 +7,7 @@ import { TopEventsChart } from '@/components/charts/TopEventsChart'
 import { Sparkline } from '@/components/Sparkline'
 import { cn } from '@/lib/utils'
 import type { LayoutContext } from '@/components/Layout'
+import { useAnalyticsInstances, type AnalyticsInstance } from '@/hooks/useAnalyticsInstances'
 
 const ANALYTICS_COLOR = '#6366f1'
 
@@ -74,6 +75,104 @@ function StatCard({
   )
 }
 
+function ServiceHealthRow({
+  title, subtitle, total, spark, loading,
+}: {
+  title: string
+  subtitle: string
+  total: number | null
+  spark: number[]
+  loading: boolean
+}) {
+  return (
+    <div
+      className="bg-card border border-border rounded-[10px] p-4 flex items-center gap-4"
+      style={{ transition: 'border-color .12s' }}
+      onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'hsl(var(--border-strong))')}
+      onMouseLeave={(e) => (e.currentTarget.style.borderColor = '')}
+    >
+      <div
+        className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+        style={{
+          background: `${ANALYTICS_COLOR}15`,
+          border: `1px solid ${ANALYTICS_COLOR}25`,
+          color: ANALYTICS_COLOR,
+        }}
+      >
+        <BarChart3 className="h-4 w-4" />
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <div className="text-[13px] font-semibold truncate">{title}</div>
+        <div className="text-[11.5px] text-muted-foreground">{subtitle}</div>
+      </div>
+
+      <div className="text-right shrink-0">
+        <div className="text-[22px] font-semibold tabular-nums tracking-tight leading-none">
+          {loading ? '—' : total != null ? total.toLocaleString() : '—'}
+        </div>
+        <div className="text-[11.5px] text-muted-foreground mt-0.5">sessions total</div>
+      </div>
+
+      {spark.length > 1 && !loading && (
+        <Sparkline data={spark} color={ANALYTICS_COLOR} width={120} height={32} />
+      )}
+
+      <span
+        className="inline-flex items-center gap-1 px-1.5 py-px rounded-full text-[11px] font-medium leading-[18px] shrink-0"
+        style={{
+          background: 'hsl(var(--success-bg))',
+          color: 'hsl(var(--success))',
+          border: '1px solid hsl(var(--success-border))',
+        }}
+      >
+        <span className="w-1.5 h-1.5 rounded-full bg-current" />
+        operational
+      </span>
+    </div>
+  )
+}
+
+function PerInstanceHealthRow({
+  companyId, instance,
+}: {
+  companyId: string
+  instance: AnalyticsInstance
+}) {
+  const [stats, setStats] = useState<SessionStats | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (!companyId) return
+    let cancelled = false
+    setLoading(true)
+    const params = new URLSearchParams({ companyId, apiKeyIds: instance.id })
+    analyticsApi
+      .get(`/api/stats/sessions?${params.toString()}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((s) => {
+        if (!cancelled) setStats(s)
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [companyId, instance.id])
+
+  const spark = stats?.byDay.map((d) => d.sessions) ?? []
+  return (
+    <ServiceHealthRow
+      title={instance.name}
+      subtitle="Sessions, events, funnels"
+      total={stats?.total ?? null}
+      spark={spark}
+      loading={loading}
+    />
+  )
+}
+
 function TimeRange({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const opts = ['24h', '7d', '30d', '90d']
   return (
@@ -102,6 +201,8 @@ function TimeRange({ value, onChange }: { value: string; onChange: (v: string) =
 
 export function Dashboard() {
   const { companyId, company } = useOutletContext<LayoutContext>()
+  const { instances } = useAnalyticsInstances(companyId)
+  const [selectedInstanceId, setSelectedInstanceId] = useState('')
   const [sessions, setSessions] = useState<SessionStats | null>(null)
   const [events, setEvents] = useState<EventStats | null>(null)
   const [duration, setDuration] = useState<DurationStats | null>(null)
@@ -109,10 +210,19 @@ export function Dashboard() {
   const [loading, setLoading] = useState(false)
   const [tick, setTick] = useState(0)
 
+  // If selected instance was revoked / no longer present, fall back to "All"
+  useEffect(() => {
+    if (selectedInstanceId && !instances.some((i) => i.id === selectedInstanceId)) {
+      setSelectedInstanceId('')
+    }
+  }, [instances, selectedInstanceId])
+
   useEffect(() => {
     if (!companyId) return
     setLoading(true)
-    const q = `?companyId=${companyId}`
+    const params = new URLSearchParams({ companyId })
+    if (selectedInstanceId) params.set('apiKeyIds', selectedInstanceId)
+    const q = `?${params.toString()}`
     Promise.all([
       analyticsApi.get(`/api/stats/sessions${q}`).then((r) => r.ok ? r.json() : null),
       analyticsApi.get(`/api/stats/events${q}`).then((r) => r.ok ? r.json() : null),
@@ -122,7 +232,7 @@ export function Dashboard() {
       setEvents(e)
       setDuration(d)
     }).finally(() => setLoading(false))
-  }, [companyId, tick])
+  }, [companyId, selectedInstanceId, tick])
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
@@ -141,6 +251,20 @@ export function Dashboard() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {instances.length > 0 && (
+            <select
+              value={selectedInstanceId}
+              onChange={(e) => setSelectedInstanceId(e.target.value)}
+              className="h-8 rounded-[7px] border border-border bg-card text-[13px] font-medium hover:bg-muted transition-colors px-2"
+              style={{ fontFamily: 'inherit', cursor: 'pointer' }}
+              title="Analytics instance"
+            >
+              <option value="">All instances</option>
+              {instances.map((i) => (
+                <option key={i.id} value={i.id}>{i.name}</option>
+              ))}
+            </select>
+          )}
           <TimeRange value={range} onChange={setRange} />
           <button
             onClick={() => setTick((v) => v + 1)}
@@ -190,58 +314,34 @@ export function Dashboard() {
             <div className="flex items-end justify-between mb-3.5">
               <div>
                 <div className="text-[14px] font-semibold">Service health</div>
-                <div className="text-[12px] text-muted-foreground mt-0.5">Analytics · last 7 days</div>
+                <div className="text-[12px] text-muted-foreground mt-0.5">
+                  Analytics · {selectedInstanceId
+                    ? instances.find((i) => i.id === selectedInstanceId)?.name ?? '—'
+                    : `${instances.length} instance${instances.length === 1 ? '' : 's'}`} · last 7 days
+                </div>
               </div>
               <Link to="/analytics" className="text-[12.5px] text-muted-foreground hover:text-foreground transition-colors no-underline">
                 View analytics →
               </Link>
             </div>
 
-            <div
-              className="bg-card border border-border rounded-[10px] p-4 flex items-center gap-4"
-              style={{ transition: 'border-color .12s' }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'hsl(var(--border-strong))')}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = '')}
-            >
-              <div
-                className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-                style={{
-                  background: `${ANALYTICS_COLOR}15`,
-                  border: `1px solid ${ANALYTICS_COLOR}25`,
-                  color: ANALYTICS_COLOR,
-                }}
-              >
-                <BarChart3 className="h-4 w-4" />
+            {selectedInstanceId || instances.length === 0 ? (
+              <ServiceHealthRow
+                title={selectedInstanceId
+                  ? instances.find((i) => i.id === selectedInstanceId)?.name ?? 'Analytics'
+                  : 'Analytics'}
+                subtitle="Sessions, events, funnels"
+                total={sessions?.total ?? null}
+                spark={sessionSpark}
+                loading={loading}
+              />
+            ) : (
+              <div className="flex flex-col gap-2">
+                {instances.map((inst) => (
+                  <PerInstanceHealthRow key={inst.id} companyId={companyId} instance={inst} />
+                ))}
               </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="text-[13px] font-semibold">Analytics</div>
-                <div className="text-[11.5px] text-muted-foreground">Sessions, events, funnels</div>
-              </div>
-
-              <div className="text-right shrink-0">
-                <div className="text-[22px] font-semibold tabular-nums tracking-tight leading-none">
-                  {loading ? '—' : sessions?.total != null ? sessions.total.toLocaleString() : '—'}
-                </div>
-                <div className="text-[11.5px] text-muted-foreground mt-0.5">sessions total</div>
-              </div>
-
-              {sessionSpark.length > 1 && !loading && (
-                <Sparkline data={sessionSpark} color={ANALYTICS_COLOR} width={120} height={32} />
-              )}
-
-              <span
-                className="inline-flex items-center gap-1 px-1.5 py-px rounded-full text-[11px] font-medium leading-[18px] shrink-0"
-                style={{
-                  background: 'hsl(var(--success-bg))',
-                  color: 'hsl(var(--success))',
-                  border: '1px solid hsl(var(--success-border))',
-                }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                operational
-              </span>
-            </div>
+            )}
           </div>
 
           {/* Charts */}

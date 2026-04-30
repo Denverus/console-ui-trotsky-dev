@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext, useSearchParams } from 'react-router-dom'
 import { LayoutDashboard, Zap, Clock, Filter, Settings, Globe, Download, Box } from 'lucide-react'
 import { analyticsApi } from '@/lib/api'
 import { SessionsChart } from '@/components/charts/SessionsChart'
@@ -8,6 +8,7 @@ import { EntityInteractionsChart } from '@/components/charts/EntityInteractionsC
 import { Sparkline } from '@/components/Sparkline'
 import { cn } from '@/lib/utils'
 import type { LayoutContext } from '@/components/Layout'
+import { useAnalyticsInstances } from '@/hooks/useAnalyticsInstances'
 
 const COLOR = '#6366f1'
 
@@ -122,6 +123,12 @@ const SUB_NAV = [
 
 export function Analytics() {
   const { companyId } = useOutletContext<LayoutContext>()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const instanceParam = searchParams.get('instance') ?? ''
+  const { instances } = useAnalyticsInstances(companyId)
+
+  const selectedInstanceId = instances.some((i) => i.id === instanceParam) ? instanceParam : ''
+
   const [tab, setTab] = useState('overview')
   const [range, setRange] = useState('7d')
   const [sessions, setSessions] = useState<SessionStats | null>(null)
@@ -130,10 +137,19 @@ export function Analytics() {
   const [entityStats, setEntityStats] = useState<EntityStats | null>(null)
   const [loading, setLoading] = useState(false)
 
+  function changeInstance(id: string) {
+    const next = new URLSearchParams(searchParams)
+    if (id) next.set('instance', id)
+    else next.delete('instance')
+    setSearchParams(next, { replace: true })
+  }
+
   useEffect(() => {
     if (!companyId) return
     setLoading(true)
-    const q = `?companyId=${companyId}`
+    const params = new URLSearchParams({ companyId })
+    if (selectedInstanceId) params.set('apiKeyIds', selectedInstanceId)
+    const q = `?${params.toString()}`
     Promise.all([
       analyticsApi.get(`/api/stats/sessions${q}`).then((r) => r.ok ? r.json() : null),
       analyticsApi.get(`/api/stats/events${q}`).then((r) => r.ok ? r.json() : null),
@@ -145,7 +161,7 @@ export function Analytics() {
       setDuration(d)
       setEntityStats(ent)
     }).finally(() => setLoading(false))
-  }, [companyId])
+  }, [companyId, selectedInstanceId])
 
   const sessionSpark = sessions?.byDay.map((d) => d.sessions) ?? []
 
@@ -199,6 +215,18 @@ export function Analytics() {
         <div className="flex items-center gap-2.5 px-6 py-3 border-b border-border bg-card shrink-0">
           <div className="text-[14px] font-semibold capitalize">{tab}</div>
           <div className="flex-1" />
+          <select
+            value={selectedInstanceId}
+            onChange={(e) => changeInstance(e.target.value)}
+            className="h-[28px] rounded-[6px] border border-border bg-card text-[12.5px] font-medium text-foreground hover:bg-muted transition-colors px-2"
+            style={{ fontFamily: 'inherit', cursor: 'pointer' }}
+            title="Analytics instance"
+          >
+            <option value="">All instances</option>
+            {instances.map((i) => (
+              <option key={i.id} value={i.id}>{i.name}</option>
+            ))}
+          </select>
           <button
             className="inline-flex items-center gap-1.5 h-[28px] px-2.5 rounded-[6px] border border-border bg-card text-[12.5px] font-medium text-foreground hover:bg-muted transition-colors"
             style={{ fontFamily: 'inherit', cursor: 'pointer' }}
