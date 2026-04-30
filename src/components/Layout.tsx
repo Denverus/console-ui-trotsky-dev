@@ -99,6 +99,11 @@ const PATH_LABELS: Record<string, string> = {
   '/app/users': 'Users',
   '/app/analytics': 'Analytics',
   '/app/configuration': 'Configuration',
+  '/app/docs': 'Docs',
+  '/app/docs/analytics': 'Docs · Analytics',
+  '/app/docs/payments': 'Docs · Payments',
+  '/app/docs/email': 'Docs · Email',
+  '/app/docs/logs': 'Docs · Logs',
 }
 
 const SERVICES = [
@@ -282,7 +287,7 @@ export function Layout() {
           {/* Footer */}
           <div className="p-3 border-t border-border flex flex-col gap-0.5">
             <SideNavItem to="/app/api-keys" icon={<Key className="h-[15px] w-[15px]" />} label="API keys" disabled />
-            <SideNavItem to="/app/docs" icon={<BookOpen className="h-[15px] w-[15px]" />} label="Docs" external />
+            <SideNavItem to="/app/docs" icon={<BookOpen className="h-[15px] w-[15px]" />} label="Docs" />
             {user?.role === 'superadmin' && (
               <SideNavItem to="/app/configuration" icon={<Settings className="h-[15px] w-[15px]" />} label="Configuration" />
             )}

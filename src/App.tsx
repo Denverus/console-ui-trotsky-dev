@@ -12,6 +12,9 @@ import { CompanyDetail } from '@/pages/CompanyDetail'
 import { Users } from '@/pages/Users'
 import { UserDetail } from '@/pages/UserDetail'
 import { Configuration } from '@/pages/Configuration'
+import { Docs } from '@/pages/Docs'
+import { DocsAnalytics } from '@/pages/DocsAnalytics'
+import { DocsServiceStub } from '@/pages/DocsServiceStub'
 import { SuperAdminRoute } from '@/components/SuperAdminRoute'
 
 export function App() {
@@ -36,6 +39,11 @@ export function App() {
             <Route path="companies/:id" element={<CompanyDetail />} />
             <Route path="users" element={<Users />} />
             <Route path="users/:id" element={<UserDetail />} />
+            <Route path="docs" element={<Docs />} />
+            <Route path="docs/analytics" element={<DocsAnalytics />} />
+            <Route path="docs/payments" element={<DocsServiceStub serviceId="payments" />} />
+            <Route path="docs/email" element={<DocsServiceStub serviceId="email" />} />
+            <Route path="docs/logs" element={<DocsServiceStub serviceId="logs" />} />
             <Route
               path="configuration"
               element={
