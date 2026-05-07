@@ -9,6 +9,7 @@ import { Sparkline } from '@/components/Sparkline'
 import { cn } from '@/lib/utils'
 import type { LayoutContext } from '@/components/Layout'
 import { useAnalyticsInstances } from '@/hooks/useAnalyticsInstances'
+import { AllowedOriginsConfig } from '@/components/AllowedOriginsConfig'
 
 const COLOR = '#6366f1'
 
@@ -125,9 +126,10 @@ export function Analytics() {
   const { companyId } = useOutletContext<LayoutContext>()
   const [searchParams, setSearchParams] = useSearchParams()
   const instanceParam = searchParams.get('instance') ?? ''
-  const { instances } = useAnalyticsInstances(companyId)
+  const { instances, refetch: refetchInstances } = useAnalyticsInstances(companyId)
 
   const selectedInstanceId = instances.some((i) => i.id === instanceParam) ? instanceParam : ''
+  const selectedInstance = instances.find((i) => i.id === selectedInstanceId) ?? null
 
   const [tab, setTab] = useState('overview')
   const [range, setRange] = useState('7d')
@@ -483,9 +485,17 @@ export function Analytics() {
 
             {/* Settings tab */}
             {tab === 'settings' && (
-              <div className="bg-card border border-border rounded-[10px] p-6 text-sm text-muted-foreground">
-                Analytics settings — coming soon.
-              </div>
+              companyId && selectedInstance ? (
+                <AllowedOriginsConfig
+                  companyId={companyId}
+                  instance={selectedInstance}
+                  onSaved={refetchInstances}
+                />
+              ) : (
+                <div className="bg-card border border-border rounded-[10px] p-6 text-sm text-muted-foreground">
+                  Pick an instance from the dropdown above to configure its allowed origins.
+                </div>
+              )
             )}
 
             <div className="h-2" />
