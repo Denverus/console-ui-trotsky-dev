@@ -102,26 +102,27 @@ export function UserDetail() {
   }
 
   if (notFound) {
-    return <div className="p-6 text-muted-foreground">User not found.</div>
+    return <div className="p-7 text-[13px] text-muted-foreground">User not found.</div>
   }
   if (!profile) {
-    return <div className="p-6 text-muted-foreground">Loading…</div>
+    return <div className="p-7 text-[13px] text-muted-foreground">Loading…</div>
   }
 
   const displayName = [profile.firstName, profile.lastName].filter(Boolean).join(' ') || profile.email
   const company = profile.companyId
 
   return (
-    <div className="p-6 space-y-6 max-w-2xl">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+    <div className="p-7 max-w-2xl">
+      <div className="mb-5 flex items-center gap-2 text-[12.5px] text-muted-foreground">
         <Link to="/app/users" className="hover:text-foreground">Users</Link>
         <span>/</span>
         <span className="text-foreground">{displayName}</span>
       </div>
 
+      <div className="space-y-4">
       <Card>
-        <CardHeader><CardTitle className="text-base">Profile</CardTitle></CardHeader>
-        <CardContent className="text-sm">
+        <CardHeader><CardTitle>Profile</CardTitle></CardHeader>
+        <CardContent className="text-[13px]">
           <dl className="grid grid-cols-[120px_1fr] gap-y-2.5">
             <dt className="text-muted-foreground">Name</dt>
             <dd>{[profile.firstName, profile.lastName].filter(Boolean).join(' ') || '—'}</dd>
@@ -144,7 +145,7 @@ export function UserDetail() {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">Edit name</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Edit name</CardTitle></CardHeader>
         <CardContent>
           <form onSubmit={handleSaveName} className="flex gap-3 flex-wrap items-end">
             <div className="space-y-1.5">
@@ -157,14 +158,14 @@ export function UserDetail() {
             </div>
             <Button type="submit" disabled={nameLoading}>{nameLoading ? 'Saving…' : 'Save'}</Button>
           </form>
-          {nameError && <p className="text-sm text-destructive mt-2">{nameError}</p>}
-          {nameSaved && <p className="text-sm text-green-600 mt-2">Saved.</p>}
+          {nameError && <p className="text-[12.5px] text-destructive mt-2">{nameError}</p>}
+          {nameSaved && <p className="text-[12.5px] text-success mt-2">Saved.</p>}
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">
+          <CardTitle>
             {isOwnProfile ? 'Change password' : 'Reset password'}
           </CardTitle>
         </CardHeader>
@@ -204,10 +205,11 @@ export function UserDetail() {
               {pwLoading ? 'Saving…' : isOwnProfile ? 'Change' : 'Reset'}
             </Button>
           </form>
-          {pwError && <p className="text-sm text-destructive mt-2">{pwError}</p>}
-          {pwSaved && <p className="text-sm text-green-600 mt-2">Password updated.</p>}
+          {pwError && <p className="text-[12.5px] text-destructive mt-2">{pwError}</p>}
+          {pwSaved && <p className="text-[12.5px] text-success mt-2">Password updated.</p>}
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }

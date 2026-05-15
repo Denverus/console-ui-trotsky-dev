@@ -6,6 +6,7 @@ export default {
     extend: {
       colors: {
         border: 'hsl(var(--border))',
+        'border-strong': 'hsl(var(--border-strong))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
@@ -16,11 +17,35 @@ export default {
         muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
         accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
         card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
+        // Semantic status tokens — each carries a foreground, surface (bg), and border tint.
+        success: {
+          DEFAULT: 'hsl(var(--success))',
+          bg: 'hsl(var(--success-bg))',
+          border: 'hsl(var(--success-border))',
+        },
+        warn: {
+          DEFAULT: 'hsl(var(--warn))',
+          bg: 'hsl(var(--warn-bg))',
+          border: 'hsl(var(--warn-border))',
+        },
+        danger: {
+          DEFAULT: 'hsl(var(--danger))',
+          bg: 'hsl(var(--danger-bg))',
+          border: 'hsl(var(--danger-border))',
+        },
+        info: {
+          DEFAULT: 'hsl(var(--info))',
+          bg: 'hsl(var(--info-bg))',
+          border: 'hsl(var(--info-border))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+        // Dense-console radii — `card` for panels, `control` for inputs/buttons.
+        card: '10px',
+        control: '7px',
       },
     },
   },

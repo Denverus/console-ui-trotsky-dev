@@ -10,8 +10,9 @@ import { cn } from '@/lib/utils'
 import type { LayoutContext } from '@/components/Layout'
 import { useAnalyticsInstances } from '@/hooks/useAnalyticsInstances'
 import { AllowedOriginsConfig } from '@/components/AllowedOriginsConfig'
+import { ANALYTICS_ACCENT } from '@/lib/theme'
 
-const COLOR = '#6366f1'
+const COLOR = ANALYTICS_ACCENT
 
 interface SessionStats {
   total: number

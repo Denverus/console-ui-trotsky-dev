@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import { PageHeader } from '@/components/PageHeader'
 import { cn } from '@/lib/utils'
 
 export function Configuration() {
@@ -59,8 +60,8 @@ export function Configuration() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-xl font-semibold">Configuration</h1>
+    <div className="p-7">
+      <PageHeader title="Configuration" description="Platform-wide settings (SuperAdmin only)." />
 
       <Tabs defaultValue="registration">
         <TabsList>
@@ -70,7 +71,7 @@ export function Configuration() {
         <TabsContent value="registration">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Registration</CardTitle>
+              <CardTitle>Registration</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between gap-4">
@@ -104,7 +105,7 @@ export function Configuration() {
               </div>
 
               {saveMessage && (
-                <p className={cn('text-sm mt-4', saveMessage.type === 'ok' ? 'text-green-600' : 'text-destructive')}>
+                <p className={cn('text-[12.5px] mt-4', saveMessage.type === 'ok' ? 'text-success' : 'text-destructive')}>
                   {saveMessage.text}
                 </p>
               )}

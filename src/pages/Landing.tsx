@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
+import { ANALYTICS_ACCENT } from '@/lib/theme'
 
-const ACCENT = '#6366f1'
+const ACCENT = ANALYTICS_ACCENT
 
 export function Landing() {
   return (

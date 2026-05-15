@@ -101,7 +101,7 @@ export function AllowedOriginsConfig({ companyId, instance, onSaved }: Props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Allowed origins — {instance.name}</CardTitle>
+        <CardTitle>Allowed origins — {instance.name}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
@@ -159,8 +159,8 @@ export function AllowedOriginsConfig({ companyId, instance, onSaved }: Props) {
           {saveMessage && (
             <p
               className={cn(
-                'text-sm',
-                saveMessage.type === 'ok' ? 'text-green-600' : 'text-destructive',
+                'text-[12.5px]',
+                saveMessage.type === 'ok' ? 'text-success' : 'text-destructive',
               )}
             >
               {saveMessage.text}

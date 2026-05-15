@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Select } from '@/components/ui/select'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { ChevronLeft, Plus, RotateCcw, Trash2, Copy, Check, Pencil, X } from 'lucide-react'
 
@@ -142,15 +143,16 @@ export function CompanyDetail() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center gap-2">
+    <div className="p-7">
+      <div className="mb-5 flex items-center gap-2">
         <Link to="/app/companies" className="text-muted-foreground hover:text-foreground">
           <ChevronLeft className="h-4 w-4" />
         </Link>
-        <h1 className="text-xl font-semibold">{company?.name ?? '…'}</h1>
+        <h1 className="text-[18px] font-semibold tracking-tight leading-none">{company?.name ?? '…'}</h1>
         {company && <Badge variant="outline">{company.planTier}</Badge>}
       </div>
 
+      <div className="space-y-4">
       {newKey && (
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="pt-4">
@@ -175,17 +177,16 @@ export function CompanyDetail() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            <CardTitle className="text-base">Services</CardTitle>
+            <CardTitle>Services</CardTitle>
             <div className="flex items-center gap-2">
-              <select
+              <Select
                 value={selectedService}
                 onChange={(e) => setSelectedService(e.target.value as ServiceId)}
-                className="h-9 rounded-md border border-input bg-background px-2 text-sm"
               >
                 {ALL_SERVICE_IDS.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
-              </select>
+              </Select>
               <Input
                 placeholder="Instance name (e.g. Playzoo Main)"
                 value={newServiceName}
@@ -193,9 +194,9 @@ export function CompanyDetail() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleAssign()
                 }}
-                className="h-9 w-56"
+                className="w-56"
               />
-              <Button size="sm" onClick={handleAssign}>
+              <Button onClick={handleAssign}>
                 <Plus className="h-3.5 w-3.5" /> Assign
               </Button>
             </div>
@@ -296,6 +297,7 @@ export function CompanyDetail() {
           </Table>
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }

@@ -47,6 +47,19 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: system-ui, -apple-system, "Inter", "Segoe UI", sans-serif;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    /* Dense-console base size — the whole app reads at 13px unless a
+       component opts into a larger scale. */
+    font-size: 13px;
+  }
+
+  /* Form controls don't inherit typography by default — make them, so the
+     dense system applies without per-element `fontFamily: 'inherit'`. */
+  button,
+  input,
+  select,
+  textarea {
+    font-family: inherit;
+    font-size: inherit;
   }
 }

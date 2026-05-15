@@ -8,8 +8,9 @@ import { Sparkline } from '@/components/Sparkline'
 import { cn } from '@/lib/utils'
 import type { LayoutContext } from '@/components/Layout'
 import { useAnalyticsInstances, type AnalyticsInstance } from '@/hooks/useAnalyticsInstances'
+import { ANALYTICS_ACCENT } from '@/lib/theme'
 
-const ANALYTICS_COLOR = '#6366f1'
+const ANALYTICS_COLOR = ANALYTICS_ACCENT
 
 interface SessionStats {
   total: number

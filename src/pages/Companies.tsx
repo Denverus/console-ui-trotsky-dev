@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import { Select } from '@/components/ui/select'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
+import { PageHeader } from '@/components/PageHeader'
 import { Plus } from 'lucide-react'
 
 interface Company {
@@ -59,17 +61,21 @@ export function Companies() {
     tier === 'pro' ? 'default' : tier === 'starter' ? 'secondary' : 'outline'
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Companies</h1>
-        <Button size="sm" onClick={() => setShowForm(!showForm)}>
-          <Plus className="h-4 w-4" /> New company
-        </Button>
-      </div>
+    <div className="p-7">
+      <PageHeader
+        title="Companies"
+        description="Companies issued console services and API keys."
+        actions={
+          <Button onClick={() => setShowForm(!showForm)}>
+            <Plus className="h-3.5 w-3.5" /> New company
+          </Button>
+        }
+      />
 
+      <div className="space-y-4">
       {showForm && (
         <Card>
-          <CardHeader><CardTitle className="text-base">Create company</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Create company</CardTitle></CardHeader>
           <CardContent>
             <form onSubmit={handleCreate} className="flex gap-3 flex-wrap items-end">
               <div className="space-y-1.5">
@@ -88,15 +94,14 @@ export function Companies() {
               </div>
               <div className="space-y-1.5">
                 <Label>Plan</Label>
-                <select
+                <Select
                   value={planTier}
                   onChange={(e) => setPlanTier(e.target.value as 'free' | 'starter' | 'pro')}
-                  className="h-9 rounded-md border border-input bg-background px-3 text-sm"
                 >
                   <option value="free">Free</option>
                   <option value="starter">Starter</option>
                   <option value="pro">Pro</option>
-                </select>
+                </Select>
               </div>
               <Button type="submit" disabled={loading}>
                 {loading ? 'Creating…' : 'Create'}
@@ -134,7 +139,7 @@ export function Companies() {
                 <TableCell><Badge variant={tierColor(c.planTier) as 'default' | 'secondary' | 'outline'}>{c.planTier}</Badge></TableCell>
                 <TableCell className="text-muted-foreground">{new Date(c.createdAt).toLocaleDateString()}</TableCell>
                 <TableCell>
-                  <Link to={`/app/companies/${c._id}`} className="text-sm text-primary hover:underline">
+                  <Link to={`/app/companies/${c._id}`} className="text-[12.5px] font-medium text-primary hover:underline">
                     Manage →
                   </Link>
                 </TableCell>
@@ -143,6 +148,7 @@ export function Companies() {
           </TableBody>
         </Table>
       </Card>
+      </div>
     </div>
   )
 }

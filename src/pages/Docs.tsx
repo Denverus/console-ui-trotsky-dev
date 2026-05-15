@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { BarChart3, CreditCard, Mail, FileText, ArrowUpRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { SERVICE_ACCENT } from '@/lib/theme'
 
 interface ServiceDoc {
   id: 'analytics' | 'payments' | 'email' | 'logs'
@@ -17,7 +18,7 @@ export const SERVICE_DOCS: ServiceDoc[] = [
     name: 'Analytics',
     description: 'Track sessions, events, and funnels across your sites.',
     icon: BarChart3,
-    color: '#6366f1',
+    color: SERVICE_ACCENT.analytics,
     available: true,
   },
   {
@@ -25,7 +26,7 @@ export const SERVICE_DOCS: ServiceDoc[] = [
     name: 'Payments',
     description: 'Stripe-backed checkout, subscriptions, and webhooks.',
     icon: CreditCard,
-    color: '#10b981',
+    color: SERVICE_ACCENT.payments,
     available: false,
   },
   {
@@ -33,7 +34,7 @@ export const SERVICE_DOCS: ServiceDoc[] = [
     name: 'Email',
     description: 'Transactional email API wrapping Resend / SendGrid.',
     icon: Mail,
-    color: '#f59e0b',
+    color: SERVICE_ACCENT.email,
     available: false,
   },
   {
@@ -41,7 +42,7 @@ export const SERVICE_DOCS: ServiceDoc[] = [
     name: 'Logs',
     description: 'Structured log ingestion and search.',
     icon: FileText,
-    color: '#06b6d4',
+    color: SERVICE_ACCENT.logs,
     available: false,
   },
 ]

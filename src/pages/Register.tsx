@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { Brand } from '@/components/Brand'
 
 export function Register() {
   const { register } = useAuth()
@@ -44,11 +45,12 @@ export function Register() {
     return (
       <div className="flex items-center justify-center h-screen bg-muted/40">
         <Card className="w-full max-w-sm">
-          <CardHeader>
-            <CardTitle>Registration complete</CardTitle>
+          <CardHeader className="items-center gap-3 pb-2 pt-6 text-center">
+            <Brand size="lg" />
+            <CardTitle className="text-[15px]">Registration complete</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-[13px] text-muted-foreground">
               Thank you for interest to our product. We will let you know once your account approved.
             </p>
           </CardContent>
@@ -65,9 +67,12 @@ export function Register() {
   return (
     <div className="flex items-center justify-center h-screen bg-muted/40">
       <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Create account</CardTitle>
-          <CardDescription>console.trotsky.dev</CardDescription>
+        <CardHeader className="items-center gap-3 pb-2 pt-6 text-center">
+          <Brand size="lg" />
+          <div className="space-y-1">
+            <CardTitle className="text-[15px]">Create your account</CardTitle>
+            <CardDescription>Internal services dashboard</CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

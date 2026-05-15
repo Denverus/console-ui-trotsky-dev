@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { ChevronLeft, BarChart3, AlertTriangle } from 'lucide-react'
 import { CodeBlock } from '@/components/CodeBlock'
+import { ANALYTICS_ACCENT } from '@/lib/theme'
 
-const ANALYTICS_COLOR = '#6366f1'
+const ANALYTICS_COLOR = ANALYTICS_ACCENT
 const ANALYTICS_ENDPOINT = 'https://analytics.trotsky.dev'
 
 const SNIPPET_HTML = `<script

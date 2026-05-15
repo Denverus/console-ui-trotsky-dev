@@ -7,6 +7,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext'
 import { platformApi } from '@/lib/api'
 import { cn } from '@/lib/utils'
+import { ANALYTICS_ACCENT } from '@/lib/theme'
 
 export interface Company {
   _id: string
@@ -107,7 +108,7 @@ const PATH_LABELS: Record<string, string> = {
 }
 
 const SERVICES = [
-  { id: 'analytics', name: 'Analytics', path: '/app/analytics', color: '#6366f1' },
+  { id: 'analytics', name: 'Analytics', path: '/app/analytics', color: ANALYTICS_ACCENT },
 ]
 
 export function Layout() {
@@ -143,7 +144,7 @@ export function Layout() {
   const ctx: LayoutContext = { companies, companyId, company, setCompanyId }
 
   return (
-    <div className="flex h-screen flex-col bg-background text-foreground" style={{ fontSize: 13 }}>
+    <div className="flex h-screen flex-col bg-background text-foreground">
       {/* ── Top bar ── */}
       <header
         className="flex-none flex items-center gap-3.5 border-b border-border bg-card px-4"

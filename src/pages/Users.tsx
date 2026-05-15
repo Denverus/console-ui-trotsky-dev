@@ -4,6 +4,7 @@ import { platformApi } from '@/lib/api'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
+import { PageHeader } from '@/components/PageHeader'
 
 interface Company {
   _id: string
@@ -40,10 +41,8 @@ export function Users() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Users</h1>
-      </div>
+    <div className="p-7">
+      <PageHeader title="Users" description="Everyone with console access." />
 
       <Card>
         <Table>
@@ -83,7 +82,7 @@ export function Users() {
                   {new Date(u.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  <Link to={`/app/users/${u._id}`} className="text-sm text-primary hover:underline">
+                  <Link to={`/app/users/${u._id}`} className="text-[12.5px] font-medium text-primary hover:underline">
                     View →
                   </Link>
                 </TableCell>

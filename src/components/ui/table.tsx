@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 export const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
     <div className="relative w-full overflow-auto">
-      <table ref={ref} className={cn('w-full caption-bottom text-sm', className)} {...props} />
+      <table ref={ref} className={cn('w-full caption-bottom text-[13px]', className)} {...props} />
     </div>
   ),
 )
@@ -29,14 +29,14 @@ TableRow.displayName = 'TableRow'
 
 export const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<HTMLTableCellElement>>(
   ({ className, ...props }, ref) => (
-    <th ref={ref} className={cn('h-10 px-4 text-left align-middle font-medium text-muted-foreground', className)} {...props} />
+    <th ref={ref} className={cn('h-9 px-3 text-left align-middle text-[12px] font-medium text-muted-foreground', className)} {...props} />
   ),
 )
 TableHead.displayName = 'TableHead'
 
 export const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<HTMLTableCellElement>>(
   ({ className, ...props }, ref) => (
-    <td ref={ref} className={cn('p-4 align-middle', className)} {...props} />
+    <td ref={ref} className={cn('px-3 py-2.5 align-middle', className)} {...props} />
   ),
 )
 TableCell.displayName = 'TableCell'
